@@ -1,29 +1,29 @@
 import { Component, inject } from "@angular/core";
-import {
-  FormBuilder,
-  FormControlName,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import { register } from "../../store/actions";
-import { RegisterRequestInterface } from "../../types/register.interface";
+import { RegisterRequestInterface } from "../../types/registerRequest.interface";
 import { RouterLink } from "@angular/router";
+import { CommonModule } from "@angular/common";
+import { selectIsSubmit } from "../../store/reducers";
+import { authActions } from "../../store/actions";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
   selector: "mc-register",
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule],
   templateUrl: "./register.component.html",
 })
 export class RegisterComponent {
   private store: Store = inject(Store);
+  private authService = inject(AuthService);
   form = this.fb.nonNullable.group({
     username: ["", Validators.required],
     email: ["", Validators.required],
     password: ["", Validators.required],
   });
+
+  isSubmit$ = this.store.select(selectIsSubmit);
 
   constructor(private fb: FormBuilder) {}
 
@@ -32,6 +32,7 @@ export class RegisterComponent {
     const request: RegisterRequestInterface = {
       user: this.form.getRawValue(),
     };
-    this.store.dispatch(register({ request }));
+    this.store.dispatch(authActions.register({ request }));
+    this.authService.register(request);
   }
 }
