@@ -1,6 +1,6 @@
 export interface CurrentUserInterface {
   email: string;
-  toke: string;
+  token: string;
   username: string;
   bio: string | null;
   image: string | null;

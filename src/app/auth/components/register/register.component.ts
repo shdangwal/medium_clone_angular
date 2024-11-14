@@ -4,14 +4,21 @@ import { Store } from "@ngrx/store";
 import { RegisterRequestInterface } from "../../types/registerRequest.interface";
 import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { selectIsSubmit } from "../../store/reducers";
+import { selectIsSubmit, selectValidationErrors } from "../../store/reducers";
 import { authActions } from "../../store/actions";
 import { AuthService } from "../../services/auth.service";
+import { combineLatest } from "rxjs";
+import { BackendErrorMessages } from "../../../shared/components/backendErrorMessages/backendErrorMessages.component";
 
 @Component({
   selector: "mc-register",
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    CommonModule,
+    BackendErrorMessages,
+  ],
   templateUrl: "./register.component.html",
 })
 export class RegisterComponent {
@@ -23,7 +30,10 @@ export class RegisterComponent {
     password: ["", Validators.required],
   });
 
-  isSubmit$ = this.store.select(selectIsSubmit);
+  data$ = combineLatest({
+    isSubmit: this.store.select(selectIsSubmit),
+    backendErrors: this.store.select(selectValidationErrors),
+  });
 
   constructor(private fb: FormBuilder) {}
 
