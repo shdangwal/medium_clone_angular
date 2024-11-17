@@ -6,4 +6,9 @@ export const routes: Routes = [
     loadChildren: (): Promise<Routes> =>
       import("./auth/auth.routes").then((m) => m.authRoutes),
   },
+  {
+    path: "login",
+    loadChildren: (): Promise<Routes> =>
+      import("./auth/auth.routes").then((m) => m.loginRoutes),
+  },
 ];
