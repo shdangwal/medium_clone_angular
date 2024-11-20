@@ -9,6 +9,7 @@ import { ErrorMessageComponent } from "../error/error.component";
 import { LoadingComponent } from "../loading/loading.component";
 import { environment } from "../../../../environments/environment.development";
 import { PaginationComponent } from "../backendErrorMessages/pagination/pagination.component";
+import queryString from "query-string";
 
 @Component({
   selector: "mc-feed",
@@ -48,6 +49,14 @@ export class FeedComponent implements OnInit {
   }
 
   fetchFeed(): void {
-    this.store.dispatch(feedActions.getFeed({ url: this.apiUrl }));
+    const offset = this.currentPage * this.limit - this.limit;
+    const parsedUrl = queryString.parseUrl(this.apiUrl);
+    const stringifiedParams = queryString.stringify({
+      limit: this.limit,
+      offset,
+      ...parsedUrl.query,
+    });
+    const apiUrlWithParams = `${parsedUrl.url}?${stringifiedParams}`;
+    this.store.dispatch(feedActions.getFeed({ url: apiUrlWithParams }));
   }
 }
