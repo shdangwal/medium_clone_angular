@@ -26,4 +26,9 @@ export const routes: Routes = [
     loadChildren: (): Promise<Routes> =>
       import("./tagFeed/tagFeed.routes").then((m) => m.tagFeedRoutes),
   },
+  {
+    path: "articles/:slug",
+    loadChildren: (): Promise<Routes> =>
+      import("./article/article.routes").then((m) => m.articleRoutes),
+  },
 ];
